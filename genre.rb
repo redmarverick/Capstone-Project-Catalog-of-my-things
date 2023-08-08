@@ -7,7 +7,8 @@ class Genre
     @items = []
   end
 
-  def add_item(itemid)
-    @items << itemid
+  def add_item(item)
+    @items << item.id
     item.set_genre(@id)
+  end
 end

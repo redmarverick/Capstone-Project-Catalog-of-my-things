@@ -4,14 +4,14 @@ class Item
   attr_accessor :label, :genre, :author
   attr_reader :id, :published_date, :archived
 
-  def initialize(genre, author, source, published_date)
+  def initialize(label, genre, author, published_date)
     @id = SecureRandom.uuid
     @label = 'No label given'
     @genre  = 'No genre given'
     @author = 'No author given'
-    label&.add_item(@id)
-    genre&.add_item(@id)
-    author&.add_item(@id)
+    # label&.add_item(@id)
+    genre&.add_item(self)
+    # author&.add_item(@id)
     @published_date = published_date
     @archived = false
     move_to_archive
@@ -25,8 +25,9 @@ class Item
     @archived = can_be_archived?
   end
 
-  # def item.set_genre
-  # end
+  def set_genre(id)
+    @genre = id
+  end
 
   # def item.set_author
   # end
