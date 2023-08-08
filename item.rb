@@ -14,6 +14,7 @@ class Item
     author&.add_item(@id)
     @published_date = published_date
     @archived = false
+    move_to_archive
   end
 
   def can_be_archived?

@@ -31,7 +31,9 @@ class App
   #   # Implement listing sources here
   # end
 
-  # def add_item(item_type)
-  #   # Implement adding items here
-  # end
+  def add_item(item_type)
+    item_class = Object.const_get(item_type)
+    item = item_class.new
+    @items << item
+  end
 end
