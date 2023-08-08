@@ -1,11 +1,16 @@
+require 'securerandom'
+
 class Item
     attr_accessor :id, :genre, :author, :source, :published_date, :archived
   
-    def initialize(id, genre, author, source, published_date)
-      @id = id
-      @genre = genre
-      @author = author
-      @source = source
+    def initialize(genre, author, source, published_date)
+      @id = SecureRandom.uuid
+      @genre  = 'No genre given'
+      @author = 'No author given'
+      @source = 'No source given'
+      genre&.add_item(@id)
+      author&.add_item(@id)
+      source&.add_item(@id)
       @published_date = published_date
       @archived = false
     end
@@ -16,6 +21,15 @@ class Item
   
     def move_to_archive
       @archived = can_be_archived?
+    end
+
+    def item.set_genre
+    end
+
+    def item.set_author
+    end
+
+    def item.set_source
     end
   end
   
