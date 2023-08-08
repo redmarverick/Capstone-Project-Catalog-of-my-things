@@ -17,6 +17,11 @@ class App
     }
   end
 
+  def create_music_album(label, genre, author, publish_date, on_spotify)
+    music_album = MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
+    @items << music_album
+  end
+
   def check_data
     @total_data.each do |data_string, _|
       if File.exist?("stored_data/#{data_string}.json")
@@ -26,10 +31,12 @@ class App
         case data_string
         when 'items'
           check_items(data)
-        when 'books'
-          check_books(data)
-        when 'rentals'
-          check_rentals(data)
+        when 'labels'
+          # check_labels(data)
+        when 'genres'
+          # check_genres(data)
+        when 'authors'
+          # check_authors(data)
         end
         puts "Data loaded from 'stored_data/#{data_string}.json'"
       else
@@ -41,17 +48,12 @@ class App
   def check_items(data)
     data.each do |item_data|
       if item_data['type'] == 'MusicAlbum'
-        create_student(
-          person_data['name'],
-          person_data['age'],
-          person_data['classroom'],
-          parent_permission: person_data['parent_permission']
-        )
-      elsif person_data['type'] == 'Teacher'
-        create_teacher(
-          person_data['name'],
-          person_data['age'],
-          person_data['specialization']
+        create_music_album(
+          item_data['label'],
+          item_data['genre'],
+          item_data['author'],
+          item_data['publish_date'],
+          on_spotify: item_data['on_spotify']
         )
       end
     end
