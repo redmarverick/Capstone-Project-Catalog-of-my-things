@@ -59,6 +59,16 @@ class App
     end
   end
 
+  def save_data
+    @total_data.each do |data_string, data_adress|
+      datajson = JSON.generate(data_adress.call)
+      File.open("stored_data/#{data_string}.json", 'w') do |file|
+        file.write(datajson)
+        puts "write to stored_data/#{data_string}.json the data = #{data_adress.call}"
+      end
+    end
+  end
+
   def list_items(item_type)
     item_class = Object.const_get(item_type)
     puts "\nListing all #{item_type}:"
