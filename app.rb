@@ -1,5 +1,6 @@
 require_relative 'music_album.rb'
 require_relative 'genre.rb'
+require 'json'
 
 class App
   attr_reader :items
@@ -17,6 +18,11 @@ class App
     }
   end
 
+  def create_music_album(label, genre, author, publish_date, on_spotify)
+    music_album = MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
+    @items << music_album
+  end
+
   def check_data
     @total_data.each do |data_string, _|
       if File.exist?("stored_data/#{data_string}.json")
@@ -26,10 +32,12 @@ class App
         case data_string
         when 'items'
           check_items(data)
-        when 'books'
-          check_books(data)
-        when 'rentals'
-          check_rentals(data)
+        when 'labels'
+          # check_labels(data)
+        when 'genres'
+          # check_genres(data)
+        when 'authors'
+          # check_authors(data)
         end
         puts "Data loaded from 'stored_data/#{data_string}.json'"
       else
@@ -41,18 +49,23 @@ class App
   def check_items(data)
     data.each do |item_data|
       if item_data['type'] == 'MusicAlbum'
-        create_student(
-          person_data['name'],
-          person_data['age'],
-          person_data['classroom'],
-          parent_permission: person_data['parent_permission']
+        create_music_album(
+          item_data['label'],
+          item_data['genre'],
+          item_data['author'],
+          item_data['publish_date'],
+          on_spotify: item_data['on_spotify']
         )
-      elsif person_data['type'] == 'Teacher'
-        create_teacher(
-          person_data['name'],
-          person_data['age'],
-          person_data['specialization']
-        )
+      end
+    end
+  end
+
+  def save_data
+    @total_data.each do |data_string, data_adress|
+      datajson = JSON.generate(data_adress.call)
+      File.open("stored_data/#{data_string}.json", 'w') do |file|
+        file.write(datajson)
+        puts "write to stored_data/#{data_string}.json the data = #{data_adress.call}"
       end
     end
   end
@@ -89,9 +102,10 @@ class App
   def add_item(item_type)
     item = nil
     if item_type == 'MusicAlbum'
-      item = add_music_album
+      add_music_album
+    elsif item_type == 'Game'
+      item = add_game
     end
-    @items << item
   end
 
   def add_music_album
@@ -108,7 +122,7 @@ class App
     print "\nIs this album on spotify? (y/n): "
     on_spotify_input = gets.chomp.strip.downcase
     on_spotify = (on_spotify_input == 'y')
-    return MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
+    create_music_album(label, genre, author, publish_date, on_spotify)
   end
 
   def genre?(genre_name)
