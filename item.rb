@@ -1,16 +1,17 @@
 require 'securerandom'
 
 class Item
-    attr_accessor :id, :genre, :author, :source, :published_date, :archived
+    attr_accessor :label, :genre, :author,
+    attr_reader :id, :published_date, :archived
   
     def initialize(genre, author, source, published_date)
       @id = SecureRandom.uuid
+      @label = 'No label given'
       @genre  = 'No genre given'
       @author = 'No author given'
-      @source = 'No source given'
+      label&.add_item(@id)
       genre&.add_item(@id)
       author&.add_item(@id)
-      source&.add_item(@id)
       @published_date = published_date
       @archived = false
     end
