@@ -16,14 +16,17 @@ class App
     puts "\nListing all #{item_type}:"
     @items.each do |item|
       if item.is_a?(item_class)
-        puts "ID: #{item.id}, label: #{item.label}, genre: #{item.genre}, author: #{item.author}"
+        puts "label: #{item.label}, genre: #{item.genre}, author: #{item.author}, ID: #{item.id}"
       end
     end
   end
 
-  # def list_genres
-  #   # Implement listing genres here
-  # end
+  def list_genres
+    puts "\nListing all genres:"
+    @genres.each do |genre|
+      puts "name: #{genre.name}, ID: #{genre.id}, "
+    end
+  end
 
   # def list_labels
   #   # Implement listing labels here
