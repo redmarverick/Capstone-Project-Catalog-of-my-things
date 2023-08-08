@@ -5,7 +5,6 @@ class MusicAlbum < Item
   end
 
   def can_be_archived?()
-    return true if on_spotify && archived
-    return false
+    on_spotify && archived
   end
 end

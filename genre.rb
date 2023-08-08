@@ -9,5 +9,5 @@ class Genre
 
   def add_item(itemid)
     @items << itemid
-    item.set_genre(self.id)
+    item.set_genre(@id)
 end
