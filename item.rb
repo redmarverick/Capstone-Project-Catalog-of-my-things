@@ -32,7 +32,7 @@ class Item
   # def item.set_author
   # end
 
-  # def item.set_source
+  # def item.set_label
   # end
 end
   

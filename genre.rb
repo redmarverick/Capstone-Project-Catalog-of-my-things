@@ -1,6 +1,8 @@
 require 'securerandom'
 
 class Genre
+  attr_reader :name, :id
+
   def initialize(name = nil)
     @id = SecureRandom.uuid
     @name = name

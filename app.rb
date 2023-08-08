@@ -9,6 +9,52 @@ class App
     @labels = []
     @genres = []
     @authors = []
+    @total_data = {
+      'items' => -> { @items },
+      'labels' => -> { @labels },
+      'genres' => -> { @genres },
+      'authors' => -> { @authors }
+    }
+  end
+
+  def check_data
+    @total_data.each do |data_string, _|
+      if File.exist?("stored_data/#{data_string}.json")
+        puts 'file exists'
+        json_data = File.read("stored_data/#{data_string}.json")
+        data = JSON.parse(json_data)
+        case data_string
+        when 'items'
+          check_items(data)
+        when 'books'
+          check_books(data)
+        when 'rentals'
+          check_rentals(data)
+        end
+        puts "Data loaded from 'stored_data/#{data_string}.json'"
+      else
+        puts "Data file not found: 'stored_data/#{data_string}.json'"
+      end
+    end
+  end
+
+  def check_items(data)
+    data.each do |item_data|
+      if item_data['type'] == 'MusicAlbum'
+        create_student(
+          person_data['name'],
+          person_data['age'],
+          person_data['classroom'],
+          parent_permission: person_data['parent_permission']
+        )
+      elsif person_data['type'] == 'Teacher'
+        create_teacher(
+          person_data['name'],
+          person_data['age'],
+          person_data['specialization']
+        )
+      end
+    end
   end
 
   def list_items(item_type)
