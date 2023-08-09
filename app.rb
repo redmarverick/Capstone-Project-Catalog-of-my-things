@@ -1,5 +1,7 @@
-require_relative 'music_album.rb'
-require_relative 'genre.rb'
+require_relative 'music_album'
+require_relative 'genre'
+require_relative 'game'
+require_relative 'author'
 require 'json'
 
 class App
@@ -18,10 +20,34 @@ class App
     }
   end
 
-  def create_music_album(label, genre, author, publish_date, on_spotify)
+#Original function
+
+# def create_music_album(label, genre_name, author, publish_date, on_spotify)
+#    genre = find_or_create_genre(genre_name)
+#    music_album = MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
+#   @items << music_album
+# end
+
+
+  def create_music_album(label, genre_name, author_name, publish_date, on_spotify)
+    # Primero, encuentra o crea el autor utilizando el nombre del autor
+    author = find_or_create_author(author_name)
+    genre = find_or_create_genre(genre_name)
     music_album = MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
     @items << music_album
   end
+
+  def find_or_create_author(author_name)
+    existing_author = @authors.find { |author| author.name == author_name }
+  
+    if existing_author
+      existing_author
+    else
+      new_author = Author.new(author_name)
+      @authors << new_author
+      new_author
+    end
+  end  
 
   def check_data
     @total_data.each do |data_string, _|
@@ -77,16 +103,6 @@ class App
     end
   end
 
-  def list_items(item_type)
-    item_class = Object.const_get(item_type)
-    puts "\nListing all #{item_type}:"
-    @items.each do |item|
-      if item.is_a?(item_class)
-        puts "label: #{item.label}, genre: #{item.genre}, author: #{item.author}, ID: #{item.id}"
-      end
-    end
-  end
-
   def list_genres
     puts "\nListing all genres:"
     @genres.each do |genre|
@@ -98,13 +114,26 @@ class App
   #   # Implement listing labels here
   # end
 
-  # def list_authors
-  #   # Implement listing authors here
-  # end
+  def list_authors
+    if @authors.empty?
+      puts "There are no authors yet."
+    else
+      puts "Authors:"
+      @authors.each do |author|
+        puts "- #{author.name}"
+      end
+    end
+  end
 
-  # def list_sources
-  #   # Implement listing sources here
-  # end
+  def list_items(item_type)
+    item_class = Object.const_get(item_type)
+    puts "\nListing all #{item_type}:"
+    @items.each do |item|
+      if item.is_a?(item_class)
+        puts "label: #{item.label}, genre: #{item.genre}, author: #{item.author}, ID: #{item.id}"
+      end
+    end
+  end
 
   def add_item(item_type)
     item = nil
@@ -113,6 +142,33 @@ class App
     elsif item_type == 'Game'
       item = add_game
     end
+  end
+
+  def add_game
+    print "\nGive me the name of the Game please: "
+    label = gets.chomp
+  
+    print "\nGive me the genre of the Game please: "
+    genre_name = gets.chomp
+    genre_name = genre_name.strip.split.map(&:capitalize).join(' ')
+    genre = genre?(genre_name)
+  
+    print "\nGive me the author of the Game please: "
+    author_name = gets.chomp
+    author = find_or_create_author(author_name)
+  
+    print "\nGive me the publish date of the Game please (format: YYYY/MM/DD): "
+    publish_date = Date.parse(gets.chomp)
+  
+    print "\nGive me the last played date of the Game please (format: YYYY/MM/DD): "
+    last_played_at = Date.parse(gets.chomp)
+  
+    create_game(label, genre, author, publish_date, last_played_at)
+  end  
+
+  def create_game(label, genre, author, publish_date, last_played_at)
+    game = Game.new(label, genre, author, publish_date, last_played_at)
+    @items << game
   end
 
   def add_music_album
