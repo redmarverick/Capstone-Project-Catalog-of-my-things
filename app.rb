@@ -19,6 +19,18 @@ class App
       'items' => -> { @items }
     }
   end
+  
+  def label?(title, color)
+    existing_label = @labels.find { |label| label.title == title }
+  
+    if existing_label
+      existing_label
+    else
+      new_label = Label.new(title, color)
+      @labels << new_label
+      new_label
+    end
+  end
 
 #Original function
 
