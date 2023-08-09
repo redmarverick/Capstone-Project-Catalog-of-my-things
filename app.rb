@@ -20,11 +20,26 @@ class App
     }
   end
 
-  def create_music_album(label, genre_name, author, publish_date, on_spotify)
+#Original function
+
+# def create_music_album(label, genre_name, author, publish_date, on_spotify)
+#    genre = find_or_create_genre(genre_name)
+#    music_album = MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
+#   @items << music_album
+# end
+
+
+  def create_music_album(label, genre_name, author_name, publish_date, on_spotify)
+    # Primero, encuentra o crea el autor utilizando el nombre del autor
+    author = find_or_create_author(author_name)
+
     genre = find_or_create_genre(genre_name)
+
     music_album = MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
+
     @items << music_album
-  end
+end
+
 
   def find_or_create_genre(genre_name)
     existing_genre = @genres.find { |genre| genre.name == genre_name }
@@ -196,7 +211,6 @@ class App
   def create_game(label, genre, author, publish_date, last_played_at)
     game = Game.new(label, genre, author, publish_date, last_played_at)
     @items << game
-    author&.add_item(game)
   end
 
   def add_music_album
