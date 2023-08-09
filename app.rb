@@ -17,9 +17,24 @@ class App
       'authors' => -> { @authors }
     }
   end
+  
+  def label?(title, color)
+    existing_label = @labels.find { |label| label.title == title }
+  
+    if existing_label
+      existing_label
+    else
+      new_label = Label.new(title, color)
+      @labels << new_label
+      new_label
+    end
+  end
 
-  def create_music_album(label, genre, author, publish_date, on_spotify)
+  def create_music_album(label_title, genre_name, author, publish_date, on_spotify)
+    genre = genre?(genre_name)
+    label = label?(label_title, 'default_color') # Replace 'default_color' with the actual color
     music_album = MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
+    label.add_item(music_album)
     @items << music_album
   end
 

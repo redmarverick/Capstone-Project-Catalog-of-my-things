@@ -35,4 +35,3 @@ class Item
   # def item.set_label
   # end
 end
-  
