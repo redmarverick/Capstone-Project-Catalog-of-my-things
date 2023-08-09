@@ -15,3 +15,4 @@ class Label
     item.set_label(@id)
   end
 end
+
