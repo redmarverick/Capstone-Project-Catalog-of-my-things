@@ -133,20 +133,30 @@ class App
     end
   end
 
-  def list_games
-    if @items.none? { |item| item.is_a?(Game) }
-      puts "There are no games yet."
-    else
-      puts "Games:"
-      @items.select { |item| item.is_a?(Game) }.each do |game|
-        puts "- Name: #{game.label}"
-        puts "  Genre: #{find_genre_by_id(game.genre)&.name || 'Unknown Genre'}"
-        puts "  Author: #{find_author_by_id(game.author)&.name || 'Unknown Author'}"
-        puts "  Published Date: #{game.published_date || 'Unknown'}"
-        puts "  Last Played: #{game.last_played_at || 'Unknown'}"
+  # def list_games
+  #   if @items.none? { |item| item.is_a?(Game) }
+  #     puts "There are no games yet."
+  #   else
+  #     puts "Games:"
+  #     @items.select { |item| item.is_a?(Game) }.each do |game|
+  #       puts "- Name: #{game.label}"
+  #       puts "  Genre: #{find_genre_by_id(game.genre)&.name || 'Unknown Genre'}"
+  #       puts "  Author: #{find_author_by_id(game.author)&.name || 'Unknown Author'}"
+  #       puts "  Published Date: #{game.published_date || 'Unknown'}"
+  #       puts "  Last Played: #{game.last_played_at || 'Unknown'}"
+  #     end
+  #   end
+  # end
+
+  def list_items(item_type)
+    item_class = Object.const_get(item_type)
+    puts "\nListing all #{item_type}:"
+    @items.each do |item|
+      if item.is_a?(item_class)
+        puts "label: #{item.label}, genre: #{item.genre}, author: #{item.author}, ID: #{item.id}"
       end
     end
-  end  
+  end
 
   # def list_sources
   #   # Implement listing sources here

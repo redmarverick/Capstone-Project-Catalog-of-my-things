@@ -12,7 +12,7 @@ class Item
     @author = 'No author given'
     # label&.add_item(@id)
     genre&.add_item(self)
-    # author&.add_item(@id)
+    # author&.add_item(self)
     @published_date = published_date
     @archived = false
     move_to_archive
