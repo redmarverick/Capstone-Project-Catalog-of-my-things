@@ -9,4 +9,20 @@ class Book < Item
     @cover_state = cover_state
     move_to_archive
   end
+
+  def can_be_archived?
+    archived
+  end
+
+  def to_json(_options = {})
+    {
+      type: 'Book',
+      label: @label,
+      genre: @genre,
+      author: @author,
+      publisher: @publisher,
+      cover_state: @cover_state,
+      publish_date: @published_date
+    }.to_json
+  end
 end
