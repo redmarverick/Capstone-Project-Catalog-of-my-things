@@ -181,6 +181,7 @@ class App
     last_played_at = Date.parse(gets.chomp)
   
     create_game(label, genre, author, publish_date, last_played_at)
+    @items[-1].set_id_once(@items[-1].id)
   end  
 
   def create_game(label, genre, author, publish_date, last_played_at)

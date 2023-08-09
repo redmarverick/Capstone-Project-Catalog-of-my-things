@@ -30,7 +30,7 @@ class Item
       @id_setter = true
       # label&.add_item(@id)
       @genre&.add_item(self)
-      # author&.add_item(@id)
+      @author&.add_item(self)
     end
   end
 end
