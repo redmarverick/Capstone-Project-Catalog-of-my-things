@@ -6,12 +6,13 @@ class Item
 
   def initialize(label, genre, author, published_date)
     @id = SecureRandom.uuid
-    @label = 'No label given'
-    @genre  = 'No genre given'
-    @author = 'No author given'
-    # label&.add_item(@id)
-    genre&.add_item(self)
-    # author&.add_item(@id)
+    @id_setter = false
+    @label = label || 'No label given'
+    @genre  = genre || 'No genre given'
+    @author = author || 'No author given'
+    puts @label.class.name
+    puts @genre.class.name
+    puts @author.class.name
     @published_date = published_date
     @archived = false
     move_to_archive
@@ -27,6 +28,16 @@ class Item
 
   def set_genre(id)
     @genre = id
+  end
+
+  def set_id_once(newid)
+    if @id_setter == false
+      @id = newid
+      @id_setter = true
+      # label&.add_item(@id)
+      @genre&.add_item(self)
+      # author&.add_item(@id)
+    end
   end
 
   # def item.set_author

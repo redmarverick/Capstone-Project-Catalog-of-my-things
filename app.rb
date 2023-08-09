@@ -11,10 +11,10 @@ class App
     @genres = []
     @authors = []
     @total_data = {
-      'items' => -> { @items },
       'labels' => -> { @labels },
       'genres' => -> { @genres },
-      'authors' => -> { @authors }
+      'authors' => -> { @authors },
+      'items' => -> { @items }
     }
   end
 
@@ -30,14 +30,14 @@ class App
         json_data = File.read("stored_data/#{data_string}.json")
         data = JSON.parse(json_data)
         case data_string
-        when 'items'
-          check_items(data)
         when 'labels'
           # check_labels(data)
         when 'genres'
-          # check_genres(data)
+          check_genres(data)
         when 'authors'
           # check_authors(data)
+        when 'items'
+          check_items(data)
         end
         puts "Data loaded from 'stored_data/#{data_string}.json'"
       else
@@ -46,16 +46,23 @@ class App
     end
   end
 
+  def check_genres(data)
+    data.each do |genre_data|
+      genre?(genre_data['name'], genre_data['id'])
+    end
+  end
+
   def check_items(data)
     data.each do |item_data|
       if item_data['type'] == 'MusicAlbum'
         create_music_album(
           item_data['label'],
-          item_data['genre'],
+          genre_by_id(item_data['genre']),
           item_data['author'],
           item_data['publish_date'],
           on_spotify: item_data['on_spotify']
         )
+        @items[-1].set_id_once(item_data['id'])
       end
     end
   end
@@ -83,7 +90,7 @@ class App
   def list_genres
     puts "\nListing all genres:"
     @genres.each do |genre|
-      puts "name: #{genre.name}, ID: #{genre.id}, "
+      puts "name: #{genre.name}, ID: #{genre.id}, items: #{genre.items}"
     end
   end
 
@@ -123,17 +130,28 @@ class App
     on_spotify_input = gets.chomp.strip.downcase
     on_spotify = (on_spotify_input == 'y')
     create_music_album(label, genre, author, publish_date, on_spotify)
+    @items[-1].set_id_once(@items[-1].id)
   end
 
-  def genre?(genre_name)
+  def genre?(genre_name, genre_id = nil)
     existing_genre = @genres.find { |genre| genre.name == genre_name }
   
     if existing_genre
       existing_genre
     else
       new_genre = Genre.new(genre_name)
+      if genre_id != nil
+        new_genre.set_id_once(genre_id)
+      else
+        new_genre.set_id_once(new_genre.id)
+      end
       @genres << new_genre
       new_genre
     end
+  end
+
+  def genre_by_id(genre_id)
+    existing_genre = @genres.find { |genre| genre.id == genre_id }
+    existing_genre
   end
 end

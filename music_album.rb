@@ -12,6 +12,7 @@ class MusicAlbum < Item
 
   def to_json(_options = {})
     {
+      id: @id,
       type: 'MusicAlbum',
       label: @label,
       genre: @genre,
