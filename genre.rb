@@ -19,5 +19,5 @@ class Genre
     name: @name,
     items: @items
   }.to_json
-end
+  end
 end

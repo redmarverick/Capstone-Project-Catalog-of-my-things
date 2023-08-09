@@ -37,6 +37,18 @@ class App
       new_genre
     end
   end
+
+  def genre?(genre_name)
+    existing_genre = @genres.find { |genre| genre.name == genre_name }
+  
+    if existing_genre
+      existing_genre
+    else
+      new_genre = Genre.new(genre_name)
+      @genres << new_genre
+      new_genre
+    end
+  end
   
   def find_or_create_author(author_name)
     existing_author = @authors.find { |author| author.name == author_name }
@@ -175,7 +187,7 @@ class App
     game = Game.new(label, genre, author, publish_date, last_played_at)
     @items << game
     author&.add_item(game)
-  end  
+  end
 
   def add_music_album
     print "\nGive me the label of the Music Album please: "
@@ -192,17 +204,5 @@ class App
     on_spotify_input = gets.chomp.strip.downcase
     on_spotify = (on_spotify_input == 'y')
     create_music_album(label, genre, author, publish_date, on_spotify)
-  end
-
-  def genre?(genre_name)
-    existing_genre = @genres.find { |genre| genre.name == genre_name }
-  
-    if existing_genre
-      existing_genre
-    else
-      new_genre = Genre.new(genre_name)
-      @genres << new_genre
-      new_genre
-    end
   end
 end
