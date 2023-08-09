@@ -28,26 +28,39 @@ class App
 #   @items << music_album
 # end
 
-
-  def create_music_album(label, genre_name, author_name, publish_date, on_spotify)
-    # Primero, encuentra o crea el autor utilizando el nombre del autor
-    author = find_or_create_author(author_name)
-    genre = find_or_create_genre(genre_name)
-    music_album = MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
-    @items << music_album
-  end
-
-  def find_or_create_author(author_name)
+  def find_or_create_author(author_name, author_id = nil)
     existing_author = @authors.find { |author| author.name == author_name }
   
     if existing_author
       existing_author
     else
       new_author = Author.new(author_name)
+      if author_id != nil
+        new_author.set_id_once(author_id)
+      else
+        new_author.set_id_once(new_author.id)
+      end
       @authors << new_author
       new_author
     end
-  end  
+  end
+
+  def genre?(genre_name, genre_id = nil)
+    existing_genre = @genres.find { |genre| genre.name == genre_name }
+  
+    if existing_genre
+      existing_genre
+    else
+      new_genre = Genre.new(genre_name)
+      if genre_id != nil
+        new_genre.set_id_once(genre_id)
+      else
+        new_genre.set_id_once(new_genre.id)
+      end
+      @genres << new_genre
+      new_genre
+    end
+  end
 
   def check_data
     @total_data.each do |data_string, _|
@@ -104,9 +117,13 @@ class App
   end
 
   def list_genres
-    puts "\nListing all genres:"
-    @genres.each do |genre|
-      puts "name: #{genre.name}, ID: #{genre.id}, items: #{genre.items}"
+    if @genres.empty?
+      puts "There are no authors yet."
+    else
+      puts "Genres:"
+      @genres.each do |genre|
+        puts "name: #{genre.name}, ID: #{genre.id}, items: #{genre.items}"
+      end
     end
   end
 
@@ -120,7 +137,7 @@ class App
     else
       puts "Authors:"
       @authors.each do |author|
-        puts "- #{author.name}"
+        puts "name: #{author.name}, ID: #{author.id}, items: #{author.items}"
       end
     end
   end
@@ -189,21 +206,11 @@ class App
     @items[-1].set_id_once(@items[-1].id)
   end
 
-  def genre?(genre_name, genre_id = nil)
-    existing_genre = @genres.find { |genre| genre.name == genre_name }
-  
-    if existing_genre
-      existing_genre
-    else
-      new_genre = Genre.new(genre_name)
-      if genre_id != nil
-        new_genre.set_id_once(genre_id)
-      else
-        new_genre.set_id_once(new_genre.id)
-      end
-      @genres << new_genre
-      new_genre
-    end
+  def create_music_album(label, genre_name, author_name, publish_date, on_spotify)
+    author = find_or_create_author(author_name)
+    genre = genre?(genre_name)
+    music_album = MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
+    @items << music_album
   end
 
   def genre_by_id(genre_id)

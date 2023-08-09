@@ -12,7 +12,7 @@ class Genre
 
   def add_item(item)
     @items << item.id
-    item.set_genre(@id)
+    item.genre = @id
   end
 
   def set_id_once(newid)

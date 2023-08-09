@@ -24,10 +24,6 @@ class Item
     @archived = can_be_archived?
   end
 
-  def set_genre(id)
-    @genre = id
-  end
-
   def set_id_once(newid)
     if @id_setter == false
       @id = newid
@@ -37,11 +33,5 @@ class Item
       # author&.add_item(@id)
     end
   end
-
-  # def item.set_author
-  # end
-
-  # def item.set_label
-  # end
 end
   
