@@ -1,8 +1,14 @@
-require_relative 'music_album'
-require_relative 'genre'
 require_relative 'game'
+require_relative 'book'
+require_relative 'music_album'
+
+require_relative 'label'
+require_relative 'genre'
 require_relative 'author'
+
 require 'json'
+
+require 'date'
 
 class App
   attr_reader :items
@@ -20,25 +26,22 @@ class App
     }
   end
   
-  def label?(title, color)
+  def label?(title, color, label_id = nil)
     existing_label = @labels.find { |label| label.title == title }
   
     if existing_label
       existing_label
     else
       new_label = Label.new(title, color)
+      if label_id == nil
+        new_label.set_id_once(new_label.id)
+      else
+        new_label.set_id_once(label_id)
+      end
       @labels << new_label
       new_label
     end
   end
-
-#Original function
-
-# def create_music_album(label, genre_name, author, publish_date, on_spotify)
-#    genre = find_or_create_genre(genre_name)
-#    music_album = MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
-#   @items << music_album
-# end
 
   def find_or_create_author(author_name, author_id = nil)
     existing_author = @authors.find { |author| author.name == author_name }
@@ -82,7 +85,7 @@ class App
         data = JSON.parse(json_data)
         case data_string
         when 'labels'
-          # check_labels(data)
+          check_labels(data)
         when 'genres'
           check_genres(data)
         when 'authors'
@@ -94,6 +97,12 @@ class App
       else
         puts "Data file not found: 'stored_data/#{data_string}.json'"
       end
+    end
+  end
+
+  def check_labels(data)
+    data.each do |label_data|
+      label?(label_data['title'], label_data['color'], label_data['id'])
     end
   end
 
@@ -126,7 +135,17 @@ class App
           genre_by_id(item_data['genre']),
           author_by_id(item_data['author']),
           item_data['publish_date'],
-          on_spotify: item_data['on_spotify']
+          item_data['last_played_at']
+        )
+        @items[-1].set_id_once(item_data['id'])
+      elsif item_data['type'] == 'Book'
+        create_book(
+          label_by_id(item_data['label']),
+          genre_by_id(item_data['genre']),
+          author_by_id(item_data['author']),
+          item_data['publish_date'],
+          item_data['publisher'],
+          item_data['cover_state'],
         )
         @items[-1].set_id_once(item_data['id'])
       end
@@ -154,9 +173,16 @@ class App
     end
   end
 
-  # def list_labels
-  #   # Implement listing labels here
-  # end
+  def list_labels
+    if @labels.empty?
+      puts "There are no labels yet."
+    else
+      puts "Labels:"
+      @labels.each do |label|
+        puts "title: #{label.title}, color: #{label.color}, ID: #{label.id}, items: #{label.items}"
+      end
+    end
+  end
 
   def list_authors
     if @authors.empty?
@@ -180,17 +206,60 @@ class App
   end
 
   def add_item(item_type)
-    item = nil
     if item_type == 'MusicAlbum'
       add_music_album
     elsif item_type == 'Game'
-      item = add_game
+      add_game
+    elsif item_type == 'Book'
+      add_book
     end
+  end
+
+  def add_book
+    print "\nGive me the label of the Book please: "
+    label_name = gets.chomp
+    label_name = label_name.strip.split.map(&:capitalize).join(' ')
+    label = label?(label_name, 'BlueLabel')
+    print "\nGive me the genre of the Book please: "
+    genre_name = gets.chomp
+    genre_name = genre_name.strip.split.map(&:capitalize).join(' ')
+    genre = genre?(genre_name)
+    print "\nGive me the author of the Book please: "
+    author_name = gets.chomp
+    author_name = author_name.strip.split.map(&:capitalize).join(' ')
+    author = find_or_create_author(author_name)
+    publish_date = nil
+    loop do
+      print "\nGive me the publish date of the Book please (format: YYYY/MM/DD): "
+      publish_date = gets.chomp
+      begin
+        publish_date_formated = DateTime.parse(publish_date).to_time
+        break
+      rescue ArgumentError
+        puts "Invalid date format. Please use the format YYYY/MM/DD."
+        puts ''
+      end
+    end
+    print "\nGive me the publisher: "
+    publisher_name = gets.chomp
+    publisher = publisher_name.strip.split.map(&:capitalize).join(' ')
+    print "\nis the cover in a good or bad state? ('good'/'bad'): "
+    cover_state = gets.chomp.strip.downcase
+    cover_state = 'bad' unless cover_state == 'good'
+    create_book(label, genre, author, publish_date, publisher, cover_state)
+    @items[-1].set_id_once(@items[-1].id)
+  end
+
+  def create_book(label, genre, author, publish_date, publisher, cover_state)
+    book = Book.new(label, genre, author, publish_date, publisher, cover_state)
+    @items << book
   end
 
   def add_game
     print "\nGive me the name of the Game please: "
-    label = gets.chomp
+    label_name = gets.chomp
+    label_name = label_name.strip.split.map(&:capitalize).join(' ')
+    label = label?(label_name, 'BlueLabel')
   
     print "\nGive me the genre of the Game please: "
     genre_name = gets.chomp
@@ -201,13 +270,34 @@ class App
     author_name = gets.chomp
     author_name = author_name.strip.split.map(&:capitalize).join(' ')
     author = find_or_create_author(author_name)
-  
-    print "\nGive me the publish date of the Game please (format: YYYY/MM/DD): "
-    publish_date = Date.parse(gets.chomp)
-  
-    print "\nGive me the last played date of the Game please (format: YYYY/MM/DD): "
-    last_played_at = Date.parse(gets.chomp)
-  
+
+    publish_date = nil
+    loop do
+      print "\nGive me the publish date of the Game please (format: YYYY/MM/DD): "
+      publish_date = gets.chomp
+      begin
+        publish_date_formated = DateTime.parse(publish_date).to_time
+        break
+      rescue ArgumentError
+        puts "Invalid date format. Please use the format YYYY/MM/DD."
+        puts ''
+      end
+    end
+
+    last_played_at = nil
+    loop do
+      print "\nGive me the last played date of the Game please (format: YYYY/MM/DD): "
+      last_played_at = gets.chomp
+      begin
+        last_played_at_formated = DateTime.parse(last_played_at).to_time
+        break
+      rescue ArgumentError
+        puts "Invalid date format. Please use the format YYYY/MM/DD."
+        puts ''
+      end
+    end
+    puts last_played_at
+
     create_game(label, genre, author, publish_date, last_played_at)
     @items[-1].set_id_once(@items[-1].id)
   end  
@@ -219,7 +309,9 @@ class App
 
   def add_music_album
     print "\nGive me the label of the Music Album please: "
-    label = gets.chomp
+    label_name = gets.chomp
+    label_name = label_name.strip.split.map(&:capitalize).join(' ')
+    label = label?(label_name, 'BlueLabel')
     print "\nGive me the genre of the Music Album please: "
     genre_name = gets.chomp
     genre_name = genre_name.strip.split.map(&:capitalize).join(' ')
@@ -227,8 +319,18 @@ class App
     print "\nGive me the author of the Music Album please: "
     author_name = gets.chomp
     author = find_or_create_author(author_name)
-    print "\nGive me the publish date of the Music Album please (format: YYYY/MM/DD): "
-    publish_date = gets.chomp
+    publish_date = nil
+    loop do
+      print "\nGive me the publish date of the Game please (format: YYYY/MM/DD): "
+      publish_date = gets.chomp
+      begin
+        publish_date_formated = DateTime.parse(publish_date).to_time
+        break
+      rescue ArgumentError
+        puts "Invalid date format. Please use the format YYYY/MM/DD."
+        puts ''
+      end
+    end
     print "\nIs this album on spotify? (y/n): "
     on_spotify_input = gets.chomp.strip.downcase
     on_spotify = (on_spotify_input == 'y')
@@ -239,6 +341,11 @@ class App
   def create_music_album(label, genre, author, publish_date, on_spotify)
     music_album = MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
     @items << music_album
+  end
+
+  def label_by_id(label_id)
+    existing_label = @labels.find { |label| label.id == label_id }
+    existing_label
   end
 
   def genre_by_id(genre_id)

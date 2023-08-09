@@ -5,6 +5,7 @@ class Label
 
   def initialize(title, color)
     @id = SecureRandom.uuid
+    @id_setter = false
     @title = title
     @color = color
     @items = []
@@ -12,7 +13,22 @@ class Label
 
   def add_item(item)
     @items << item.id
-    item.set_label(@id)
+    item.label = @id
+  end
+
+  def set_id_once(newid)
+    if @id_setter == false
+      @id = newid
+      @id_setter = true
+    end
+  end
+
+  def to_json(_options = {})
+  {
+    id: @id,
+    title: @name,
+    color: @color,
+  }.to_json
   end
 end
 

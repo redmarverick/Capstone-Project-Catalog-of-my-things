@@ -17,7 +17,9 @@ class Item
   end
 
   def can_be_archived?
-    (Time.now - @published_date.to_time) > 10 * 365 * 24 * 60 * 60 # 10 years in seconds
+    puts @published_date
+    puts ((Time.now - DateTime.parse(@published_date).to_time) > 10 * 365 * 24 * 60 * 60)
+    (Time.now - DateTime.parse(@published_date).to_time) > 10 * 365 * 24 * 60 * 60 # 10 years in seconds
   end  
 
   def move_to_archive
@@ -28,7 +30,7 @@ class Item
     if @id_setter == false
       @id = newid
       @id_setter = true
-      # label&.add_item(@id)
+      @label&.add_item(self)
       @genre&.add_item(self)
       @author&.add_item(self)
     end

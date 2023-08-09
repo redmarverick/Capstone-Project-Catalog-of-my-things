@@ -24,10 +24,9 @@ def run(app = nil)
     when 4 then app&.list_genres
     when 5 then app&.list_labels
     when 6 then app&.list_authors
-    when 7 then app&.list_sources
-    when 8 then app&.add_item("Book")
-    when 9 then app&.add_item("MusicAlbum")
-    when 10 then app&.add_item("Game")
+    when 7 then app&.add_item("Book")
+    when 8 then app&.add_item("MusicAlbum")
+    when 9 then app&.add_item("Game")
     when 0 then break
     else puts "Invalid choice!"
     end
@@ -44,10 +43,9 @@ def display_options
   puts "4. List all genres"
   puts "5. List all labels"
   puts "6. List all authors"
-  puts "7. List all sources"
-  puts "8. Add a book"
-  puts "9. Add a music album"
-  puts "10. Add a game"
+  puts "7. Add a book"
+  puts "8. Add a music album"
+  puts "9. Add a game"
   puts "0. Quit"
 end
 
