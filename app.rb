@@ -1,5 +1,6 @@
 require_relative 'music_album.rb'
 require_relative 'genre.rb'
+require 'json'
 
 class App
   attr_reader :items
@@ -101,9 +102,10 @@ class App
   def add_item(item_type)
     item = nil
     if item_type == 'MusicAlbum'
-      item = add_music_album
+      add_music_album
+    elsif item_type == 'Game'
+      item = add_game
     end
-    @items << item
   end
 
   def add_music_album
@@ -120,7 +122,7 @@ class App
     print "\nIs this album on spotify? (y/n): "
     on_spotify_input = gets.chomp.strip.downcase
     on_spotify = (on_spotify_input == 'y')
-    return MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
+    create_music_album(label, genre, author, publish_date, on_spotify)
   end
 
   def genre?(genre_name)

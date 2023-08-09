@@ -13,6 +13,7 @@ require_relative 'item'
 
 def run(app = nil)
   puts "Welcome to the Console App!"
+  app.check_data
   loop do
     display_options
     choice = get_user_choice
@@ -32,6 +33,7 @@ def run(app = nil)
     end
   end
   puts "Goodbye!"
+  app.save_data
 end
 
 def display_options
