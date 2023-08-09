@@ -9,7 +9,7 @@ class Item
     @label = 'No label given'
     @genre  = 'No genre given'
     @author = 'No author given'
-    # label&.add_item(@id)
+    label&.add_item(self)
     genre&.add_item(self)
     # author&.add_item(@id)
     @published_date = published_date
@@ -32,6 +32,7 @@ class Item
   # def item.set_author
   # end
 
-  # def item.set_label
-  # end
+  def set_label(id)
+    @label = id
+  end
 end
