@@ -200,7 +200,7 @@ class App
     puts "\nListing all #{item_type}:"
     @items.each do |item|
       if item.is_a?(item_class)
-        puts "label: #{item.label}, genre: #{item.genre}, author: #{item.author}, ID: #{item.id}"
+        puts "label title: #{label_by_id(item.label).title}, label color: #{label_by_id(item.label).color}, genre: #{genre_by_id(item.genre).name}, author: #{author_by_id(item.author).name}, ID: #{item.id}"
       end
     end
   end
