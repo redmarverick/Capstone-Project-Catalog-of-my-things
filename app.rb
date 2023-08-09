@@ -52,10 +52,10 @@ class App
       existing_genre
     else
       new_genre = Genre.new(genre_name)
-      if genre_id != nil
-        new_genre.set_id_once(genre_id)
-      else
+      if genre_id == nil
         new_genre.set_id_once(new_genre.id)
+      else
+        new_genre.set_id_once(genre_id)
       end
       @genres << new_genre
       new_genre
@@ -74,7 +74,7 @@ class App
         when 'genres'
           check_genres(data)
         when 'authors'
-          # check_authors(data)
+          check_authors(data)
         when 'items'
           check_items(data)
         end
@@ -91,13 +91,28 @@ class App
     end
   end
 
+  def check_authors(data)
+    data.each do |author_data|
+      find_or_create_author(author_data['name'], author_data['id'])
+    end
+  end
+
   def check_items(data)
     data.each do |item_data|
       if item_data['type'] == 'MusicAlbum'
         create_music_album(
           item_data['label'],
           genre_by_id(item_data['genre']),
-          item_data['author'],
+          author_by_id(item_data['author']),
+          item_data['publish_date'],
+          on_spotify: item_data['on_spotify']
+        )
+        @items[-1].set_id_once(item_data['id'])
+      elsif item_data['type'] == 'Game'
+        create_game(
+          item_data['label'],
+          genre_by_id(item_data['genre']),
+          author_by_id(item_data['author']),
           item_data['publish_date'],
           on_spotify: item_data['on_spotify']
         )
@@ -118,7 +133,7 @@ class App
 
   def list_genres
     if @genres.empty?
-      puts "There are no authors yet."
+      puts "There are no genres yet."
     else
       puts "Genres:"
       @genres.each do |genre|
@@ -172,6 +187,7 @@ class App
   
     print "\nGive me the author of the Game please: "
     author_name = gets.chomp
+    author_name = author_name.strip.split.map(&:capitalize).join(' ')
     author = find_or_create_author(author_name)
   
     print "\nGive me the publish date of the Game please (format: YYYY/MM/DD): "
@@ -197,7 +213,8 @@ class App
     genre_name = genre_name.strip.split.map(&:capitalize).join(' ')
     genre = genre?(genre_name)
     print "\nGive me the author of the Music Album please: "
-    author = gets.chomp
+    author_name = gets.chomp
+    author = find_or_create_author(author_name)
     print "\nGive me the publish date of the Music Album please (format: YYYY/MM/DD): "
     publish_date = gets.chomp
     print "\nIs this album on spotify? (y/n): "
@@ -207,9 +224,7 @@ class App
     @items[-1].set_id_once(@items[-1].id)
   end
 
-  def create_music_album(label, genre_name, author_name, publish_date, on_spotify)
-    author = find_or_create_author(author_name)
-    genre = genre?(genre_name)
+  def create_music_album(label, genre, author, publish_date, on_spotify)
     music_album = MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
     @items << music_album
   end
@@ -217,5 +232,10 @@ class App
   def genre_by_id(genre_id)
     existing_genre = @genres.find { |genre| genre.id == genre_id }
     existing_genre
+  end
+
+  def author_by_id(author_id)
+    existing_author = @authors.find { |author| author.id == author_id }
+    existing_author
   end
 end
