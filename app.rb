@@ -122,19 +122,19 @@ class App
     data.each do |item_data|
       if item_data['type'] == 'MusicAlbum'
         create_music_album(
-          item_data['label'],
+          label_by_id(item_data['label']),
           genre_by_id(item_data['genre']),
           author_by_id(item_data['author']),
-          item_data['publish_date'],
+          item_data['published_date'],
           on_spotify: item_data['on_spotify']
         )
         @items[-1].set_id_once(item_data['id'])
       elsif item_data['type'] == 'Game'
         create_game(
-          item_data['label'],
+          label_by_id(item_data['label']),
           genre_by_id(item_data['genre']),
           author_by_id(item_data['author']),
-          item_data['publish_date'],
+          item_data['published_date'],
           item_data['last_played_at']
         )
         @items[-1].set_id_once(item_data['id'])
@@ -143,7 +143,7 @@ class App
           label_by_id(item_data['label']),
           genre_by_id(item_data['genre']),
           author_by_id(item_data['author']),
-          item_data['publish_date'],
+          item_data['published_date'],
           item_data['publisher'],
           item_data['cover_state'],
         )
@@ -228,12 +228,12 @@ class App
     author_name = gets.chomp
     author_name = author_name.strip.split.map(&:capitalize).join(' ')
     author = find_or_create_author(author_name)
-    publish_date = nil
+    published_date = nil
     loop do
       print "\nGive me the publish date of the Book please (format: YYYY/MM/DD): "
-      publish_date = gets.chomp
+      published_date = gets.chomp
       begin
-        publish_date_formated = DateTime.parse(publish_date).to_time
+        published_date_formated = DateTime.parse(published_date).to_time
         break
       rescue ArgumentError
         puts "Invalid date format. Please use the format YYYY/MM/DD."
@@ -246,12 +246,12 @@ class App
     print "\nis the cover in a good or bad state? ('good'/'bad'): "
     cover_state = gets.chomp.strip.downcase
     cover_state = 'bad' unless cover_state == 'good'
-    create_book(label, genre, author, publish_date, publisher, cover_state)
+    create_book(label, genre, author, published_date, publisher, cover_state)
     @items[-1].set_id_once(@items[-1].id)
   end
 
-  def create_book(label, genre, author, publish_date, publisher, cover_state)
-    book = Book.new(label, genre, author, publish_date, publisher, cover_state)
+  def create_book(label, genre, author, published_date, publisher, cover_state)
+    book = Book.new(label, genre, author, published_date, publisher, cover_state)
     @items << book
   end
 
@@ -271,12 +271,12 @@ class App
     author_name = author_name.strip.split.map(&:capitalize).join(' ')
     author = find_or_create_author(author_name)
 
-    publish_date = nil
+    published_date = nil
     loop do
       print "\nGive me the publish date of the Game please (format: YYYY/MM/DD): "
-      publish_date = gets.chomp
+      published_date = gets.chomp
       begin
-        publish_date_formated = DateTime.parse(publish_date).to_time
+        published_date_formated = DateTime.parse(published_date).to_time
         break
       rescue ArgumentError
         puts "Invalid date format. Please use the format YYYY/MM/DD."
@@ -298,12 +298,13 @@ class App
     end
     puts last_played_at
 
-    create_game(label, genre, author, publish_date, last_played_at)
+    create_game(label, genre, author, published_date, last_played_at)
     @items[-1].set_id_once(@items[-1].id)
   end  
 
-  def create_game(label, genre, author, publish_date, last_played_at)
-    game = Game.new(label, genre, author, publish_date, last_played_at)
+  def create_game(label, genre, author, published_date, last_played_at)
+    puts last_played_at
+    game = Game.new(label, genre, author, published_date, last_played_at)
     @items << game
   end
 
@@ -319,27 +320,29 @@ class App
     print "\nGive me the author of the Music Album please: "
     author_name = gets.chomp
     author = find_or_create_author(author_name)
-    publish_date = nil
+    published_date = nil
     loop do
       print "\nGive me the publish date of the Game please (format: YYYY/MM/DD): "
-      publish_date = gets.chomp
+      published_date = gets.chomp
       begin
-        publish_date_formated = DateTime.parse(publish_date).to_time
+        published_date_formated = DateTime.parse(published_date).to_time
         break
       rescue ArgumentError
         puts "Invalid date format. Please use the format YYYY/MM/DD."
         puts ''
       end
     end
+    puts published_date
+
     print "\nIs this album on spotify? (y/n): "
     on_spotify_input = gets.chomp.strip.downcase
     on_spotify = (on_spotify_input == 'y')
-    create_music_album(label, genre, author, publish_date, on_spotify)
+    create_music_album(label, genre, author, published_date, on_spotify)
     @items[-1].set_id_once(@items[-1].id)
   end
 
-  def create_music_album(label, genre, author, publish_date, on_spotify)
-    music_album = MusicAlbum.new(label, genre, author, publish_date, on_spotify: on_spotify)
+  def create_music_album(label, genre, author, published_date, on_spotify)
+    music_album = MusicAlbum.new(label, genre, author, published_date, on_spotify: on_spotify)
     @items << music_album
   end
 

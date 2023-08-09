@@ -26,7 +26,7 @@ class Label
   def to_json(_options = {})
   {
     id: @id,
-    title: @name,
+    title: @title,
     color: @color,
   }.to_json
   end
