@@ -219,6 +219,7 @@ class App
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def add_book
     print "\nGive me the label of the Book please: "
     label_name = gets.chomp
@@ -253,11 +254,14 @@ class App
     create_book(label, genre, author, published_date, publisher, cover_state)
     @items[-1].id_changer(@items[-1].id)
   end
+  # rubocop:enable Metrics/AbcSize
 
+  # rubocop:disable Metrics/ParameterLists
   def create_book(label, genre, author, published_date, publisher, cover_state)
     book = Book.new(label, genre, author, published_date, publisher, cover_state)
     @items << book
   end
+  # rubocop:enable Metrics/ParameterLists
 
   def add_game
     print "\nGive me the name of the Game please: "
