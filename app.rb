@@ -10,6 +10,8 @@ require 'json'
 
 require 'date'
 
+# rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/ClassLength
 class App
   attr_reader :items
 
@@ -25,18 +27,18 @@ class App
       'items' => -> { @items }
     }
   end
-  
+
   def label?(title, color, label_id = nil)
     existing_label = @labels.find { |label| label.title == title }
-  
+
     if existing_label
       existing_label
     else
       new_label = Label.new(title, color)
-      if label_id == nil
-        new_label.set_id_once(new_label.id)
+      if label_id.nil?
+        new_label.id_changer(new_label.id)
       else
-        new_label.set_id_once(label_id)
+        new_label.id_changer(label_id)
       end
       @labels << new_label
       new_label
@@ -45,15 +47,15 @@ class App
 
   def find_or_create_author(author_name, author_id = nil)
     existing_author = @authors.find { |author| author.name == author_name }
-  
+
     if existing_author
       existing_author
     else
       new_author = Author.new(author_name)
-      if author_id != nil
-        new_author.set_id_once(author_id)
+      if author_id.nil?
+        new_author.id_changer(new_author.id)
       else
-        new_author.set_id_once(new_author.id)
+        new_author.id_changer(author_id)
       end
       @authors << new_author
       new_author
@@ -62,15 +64,15 @@ class App
 
   def genre?(genre_name, genre_id = nil)
     existing_genre = @genres.find { |genre| genre.name == genre_name }
-  
+
     if existing_genre
       existing_genre
     else
       new_genre = Genre.new(genre_name)
-      if genre_id == nil
-        new_genre.set_id_once(new_genre.id)
+      if genre_id.nil?
+        new_genre.id_changer(new_genre.id)
       else
-        new_genre.set_id_once(genre_id)
+        new_genre.id_changer(genre_id)
       end
       @genres << new_genre
       new_genre
@@ -120,7 +122,8 @@ class App
 
   def check_items(data)
     data.each do |item_data|
-      if item_data['type'] == 'MusicAlbum'
+      case item_data['type']
+      when 'MusicAlbum'
         create_music_album(
           label_by_id(item_data['label']),
           genre_by_id(item_data['genre']),
@@ -128,8 +131,8 @@ class App
           item_data['published_date'],
           on_spotify: item_data['on_spotify']
         )
-        @items[-1].set_id_once(item_data['id'])
-      elsif item_data['type'] == 'Game'
+        @items[-1].id_changer(item_data['id'])
+      when 'Game'
         create_game(
           label_by_id(item_data['label']),
           genre_by_id(item_data['genre']),
@@ -137,17 +140,17 @@ class App
           item_data['published_date'],
           item_data['last_played_at']
         )
-        @items[-1].set_id_once(item_data['id'])
-      elsif item_data['type'] == 'Book'
+        @items[-1].id_changer(item_data['id'])
+      when 'Book'
         create_book(
           label_by_id(item_data['label']),
           genre_by_id(item_data['genre']),
           author_by_id(item_data['author']),
           item_data['published_date'],
           item_data['publisher'],
-          item_data['cover_state'],
+          item_data['cover_state']
         )
-        @items[-1].set_id_once(item_data['id'])
+        @items[-1].id_changer(item_data['id'])
       end
     end
   end
@@ -164,9 +167,9 @@ class App
 
   def list_genres
     if @genres.empty?
-      puts "There are no genres yet."
+      puts 'There are no genres yet.'
     else
-      puts "Genres:"
+      puts 'Genres:'
       @genres.each do |genre|
         puts "name: #{genre.name}, ID: #{genre.id}, items: #{genre.items}"
       end
@@ -175,9 +178,9 @@ class App
 
   def list_labels
     if @labels.empty?
-      puts "There are no labels yet."
+      puts 'There are no labels yet.'
     else
-      puts "Labels:"
+      puts 'Labels:'
       @labels.each do |label|
         puts "title: #{label.title}, color: #{label.color}, ID: #{label.id}, items: #{label.items}"
       end
@@ -186,9 +189,9 @@ class App
 
   def list_authors
     if @authors.empty?
-      puts "There are no authors yet."
+      puts 'There are no authors yet.'
     else
-      puts "Authors:"
+      puts 'Authors:'
       @authors.each do |author|
         puts "name: #{author.name}, ID: #{author.id}, items: #{author.items}"
       end
@@ -199,22 +202,27 @@ class App
     item_class = Object.const_get(item_type)
     puts "\nListing all #{item_type}:"
     @items.each do |item|
-      if item.is_a?(item_class)
-        puts "label title: #{label_by_id(item.label).title}, label color: #{label_by_id(item.label).color}, genre: #{genre_by_id(item.genre).name}, author: #{author_by_id(item.author).name}, ID: #{item.id}"
-      end
+      next unless item.is_a?(item_class)
+
+      puts "label title: #{label_by_id(item.label).title}"
+      puts "label color: #{label_by_id(item.label).color}"
+      puts "genre: #{genre_by_id(item.genre).name}"
+      puts "author: #{author_by_id(item.author).name}, ID: #{item.id}"
     end
   end
 
   def add_item(item_type)
-    if item_type == 'MusicAlbum'
+    case item_type
+    when 'MusicAlbum'
       add_music_album
-    elsif item_type == 'Game'
+    when 'Game'
       add_game
-    elsif item_type == 'Book'
+    when 'Book'
       add_book
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def add_book
     print "\nGive me the label of the Book please: "
     label_name = gets.chomp
@@ -233,10 +241,10 @@ class App
       print "\nGive me the publish date of the Book please (format: YYYY/MM/DD): "
       published_date = gets.chomp
       begin
-        published_date_formated = DateTime.parse(published_date).to_time
+        DateTime.parse(published_date).to_time
         break
       rescue ArgumentError
-        puts "Invalid date format. Please use the format YYYY/MM/DD."
+        puts 'Invalid date format. Please use the format YYYY/MM/DD.'
         puts ''
       end
     end
@@ -247,25 +255,28 @@ class App
     cover_state = gets.chomp.strip.downcase
     cover_state = 'bad' unless cover_state == 'good'
     create_book(label, genre, author, published_date, publisher, cover_state)
-    @items[-1].set_id_once(@items[-1].id)
+    @items[-1].id_changer(@items[-1].id)
   end
+  # rubocop:enable Metrics/AbcSize
 
+  # rubocop:disable Metrics/ParameterLists
   def create_book(label, genre, author, published_date, publisher, cover_state)
     book = Book.new(label, genre, author, published_date, publisher, cover_state)
     @items << book
   end
+  # rubocop:enable Metrics/ParameterLists
 
   def add_game
     print "\nGive me the name of the Game please: "
     label_name = gets.chomp
     label_name = label_name.strip.split.map(&:capitalize).join(' ')
     label = label?(label_name, 'BlueLabel')
-  
+
     print "\nGive me the genre of the Game please: "
     genre_name = gets.chomp
     genre_name = genre_name.strip.split.map(&:capitalize).join(' ')
     genre = genre?(genre_name)
-  
+
     print "\nGive me the author of the Game please: "
     author_name = gets.chomp
     author_name = author_name.strip.split.map(&:capitalize).join(' ')
@@ -276,10 +287,10 @@ class App
       print "\nGive me the publish date of the Game please (format: YYYY/MM/DD): "
       published_date = gets.chomp
       begin
-        published_date_formated = DateTime.parse(published_date).to_time
+        DateTime.parse(published_date).to_time
         break
       rescue ArgumentError
-        puts "Invalid date format. Please use the format YYYY/MM/DD."
+        puts 'Invalid date format. Please use the format YYYY/MM/DD.'
         puts ''
       end
     end
@@ -289,18 +300,18 @@ class App
       print "\nGive me the last played date of the Game please (format: YYYY/MM/DD): "
       last_played_at = gets.chomp
       begin
-        last_played_at_formated = DateTime.parse(last_played_at).to_time
+        DateTime.parse(last_played_at).to_time
         break
       rescue ArgumentError
-        puts "Invalid date format. Please use the format YYYY/MM/DD."
+        puts 'Invalid date format. Please use the format YYYY/MM/DD.'
         puts ''
       end
     end
     puts last_played_at
 
     create_game(label, genre, author, published_date, last_played_at)
-    @items[-1].set_id_once(@items[-1].id)
-  end  
+    @items[-1].id_changer(@items[-1].id)
+  end
 
   def create_game(label, genre, author, published_date, last_played_at)
     puts last_played_at
@@ -325,10 +336,10 @@ class App
       print "\nGive me the publish date of the Game please (format: YYYY/MM/DD): "
       published_date = gets.chomp
       begin
-        published_date_formated = DateTime.parse(published_date).to_time
+        DateTime.parse(published_date).to_time
         break
       rescue ArgumentError
-        puts "Invalid date format. Please use the format YYYY/MM/DD."
+        puts 'Invalid date format. Please use the format YYYY/MM/DD.'
         puts ''
       end
     end
@@ -338,7 +349,7 @@ class App
     on_spotify_input = gets.chomp.strip.downcase
     on_spotify = (on_spotify_input == 'y')
     create_music_album(label, genre, author, published_date, on_spotify)
-    @items[-1].set_id_once(@items[-1].id)
+    @items[-1].id_changer(@items[-1].id)
   end
 
   def create_music_album(label, genre, author, published_date, on_spotify)
@@ -347,17 +358,16 @@ class App
   end
 
   def label_by_id(label_id)
-    existing_label = @labels.find { |label| label.id == label_id }
-    existing_label
+    @labels.find { |label| label.id == label_id }
   end
 
   def genre_by_id(genre_id)
-    existing_genre = @genres.find { |genre| genre.id == genre_id }
-    existing_genre
+    @genres.find { |genre| genre.id == genre_id }
   end
 
   def author_by_id(author_id)
-    existing_author = @authors.find { |author| author.id == author_id }
-    existing_author
+    @authors.find { |author| author.id == author_id }
   end
 end
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/ClassLength

@@ -15,17 +15,17 @@ class Author
     item.author = @id
   end
 
-  def set_id_once(newid)
-    if @id_setter == false
-      @id = newid
-      @id_setter = true
-    end
+  def id_changer(newid)
+    return unless @id_setter == false
+
+    @id = newid
+    @id_setter = true
   end
 
   def to_json(_options = {})
-  {
-    id: @id,
-    name: @name,
-  }.to_json
+    {
+      id: @id,
+      name: @name
+    }.to_json
   end
 end

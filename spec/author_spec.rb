@@ -44,18 +44,18 @@ RSpec.describe Author do
     end
   end
 
-  describe '#set_id_once' do
+  describe '#id_changer' do
     it 'sets the id if id_setter is false' do
       new_id = SecureRandom.uuid
-      author.set_id_once(new_id)
+      author.id_changer(new_id)
       expect(author.id).to eq(new_id)
     end
 
     it 'does not set the id if id_setter is true' do
       original_id = author.id
       new_id = SecureRandom.uuid
-      author.set_id_once(original_id)
-      author.set_id_once(new_id)
+      author.id_changer(original_id)
+      author.id_changer(new_id)
       expect(author.id).to eq(original_id)
     end
   end
