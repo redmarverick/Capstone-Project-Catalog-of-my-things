@@ -1,0 +1,15 @@
+CREATE TABLE labels (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  color TEXT NOT NULL
+);
+
+CREATE TABLE genres (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL
+);
+
+CREATE TABLE authors (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL
+);
