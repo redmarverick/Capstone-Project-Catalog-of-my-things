@@ -23,6 +23,13 @@
 
 # 📖 [Catalog of my things] <a name="about-project"></a>
 
+<div align="center">
+
+  <img src="pc_readme.png" alt="logo" />
+  <br/>
+
+</div>
+
 **[Catalog of my things]** This is a Ruby project.
 
 ## 🛠 Built With <a name="built-with"></a>
