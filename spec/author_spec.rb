@@ -1,6 +1,7 @@
 require_relative '../author'
 require 'rspec'
 require 'securerandom'
+require 'json'
 
 RSpec.describe Author do
   let(:name) { 'Sample Author' }

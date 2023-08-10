@@ -1,6 +1,7 @@
 require_relative '../game'
 require 'rspec'
 require 'date'
+require 'json'
 
 RSpec.describe Game do
   let(:label) { 'Sample Label' }

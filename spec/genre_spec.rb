@@ -1,6 +1,7 @@
 require_relative '../genre'
 require 'rspec'
 require 'securerandom'
+require 'json'
 
 RSpec.describe Genre do
   let(:name) { 'Sample Genre' }

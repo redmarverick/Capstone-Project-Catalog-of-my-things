@@ -1,6 +1,7 @@
 require_relative '../label'
 require 'rspec'
 require 'securerandom'
+require 'json'
 
 RSpec.describe Label do
   let(:title) { 'Sample Label' }

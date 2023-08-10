@@ -1,6 +1,7 @@
 require_relative '../book'
 require 'rspec'
 require 'date'
+require 'json'
 
 RSpec.describe Book do
   let(:label) { 'Sample Label' }

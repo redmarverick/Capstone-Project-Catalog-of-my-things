@@ -1,6 +1,7 @@
 require_relative '../music_album'
 require 'rspec'
 require 'date'
+require 'json'
 
 RSpec.describe MusicAlbum do
   let(:label) { 'Sample Label' }
