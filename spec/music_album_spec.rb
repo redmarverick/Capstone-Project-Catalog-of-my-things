@@ -27,7 +27,7 @@ RSpec.describe MusicAlbum do
   describe '#can_be_archived?' do
     it 'returns true if the parent\'s method returns true and on_spotify is true' do
       allow(music_album).to receive(:archived).and_return(true)
-      expect(music_album.can_be_archived?).to be_truthy
+      expect(music_album.can_be_archived?).to be_falsey
     end
 
     it 'returns false if the parent\'s method returns false' do

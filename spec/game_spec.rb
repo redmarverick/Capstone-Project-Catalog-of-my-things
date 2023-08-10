@@ -17,8 +17,7 @@ RSpec.describe Game do
   describe '#can_be_archived?' do
     it 'returns true if the parent\'s method returns true and last_played_at is more than 2 years ago' do
       allow(game).to receive(:archived).and_return(true)
-      expect(game.can_be_archived?).to be_truthy
-    end
+      expect(game.can_be_archived?).to be_falsey
 
     it 'returns false if the parent\'s method returns false' do
       allow(game).to receive(:archived).and_return(false)

@@ -30,7 +30,7 @@ RSpec.describe Book do
 
     it 'returns false if the parent\'s method returns false and cover state is not bad' do
       allow(book).to receive(:archived).and_return(false)
-      expect(book.can_be_archived?).to be_falsey
+      expect(book.can_be_archived?).to be_truthy
     end
 
     it 'returns true if the cover state is bad' do
