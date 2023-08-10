@@ -36,9 +36,9 @@ class App
     else
       new_label = Label.new(title, color)
       if label_id.nil?
-        new_label.set_id_once(new_label.id)
+        new_label.id_changer(new_label.id)
       else
-        new_label.set_id_once(label_id)
+        new_label.id_changer(label_id)
       end
       @labels << new_label
       new_label
@@ -53,9 +53,9 @@ class App
     else
       new_author = Author.new(author_name)
       if author_id.nil?
-        new_author.set_id_once(new_author.id)
+        new_author.id_changer(new_author.id)
       else
-        new_author.set_id_once(author_id)
+        new_author.id_changer(author_id)
       end
       @authors << new_author
       new_author
@@ -70,9 +70,9 @@ class App
     else
       new_genre = Genre.new(genre_name)
       if genre_id.nil?
-        new_genre.set_id_once(new_genre.id)
+        new_genre.id_changer(new_genre.id)
       else
-        new_genre.set_id_once(genre_id)
+        new_genre.id_changer(genre_id)
       end
       @genres << new_genre
       new_genre
@@ -131,7 +131,7 @@ class App
           item_data['published_date'],
           on_spotify: item_data['on_spotify']
         )
-        @items[-1].set_id_once(item_data['id'])
+        @items[-1].id_changer(item_data['id'])
       when 'Game'
         create_game(
           label_by_id(item_data['label']),
@@ -140,7 +140,7 @@ class App
           item_data['published_date'],
           item_data['last_played_at']
         )
-        @items[-1].set_id_once(item_data['id'])
+        @items[-1].id_changer(item_data['id'])
       when 'Book'
         create_book(
           label_by_id(item_data['label']),
@@ -150,7 +150,7 @@ class App
           item_data['publisher'],
           item_data['cover_state']
         )
-        @items[-1].set_id_once(item_data['id'])
+        @items[-1].id_changer(item_data['id'])
       end
     end
   end
@@ -251,7 +251,7 @@ class App
     cover_state = gets.chomp.strip.downcase
     cover_state = 'bad' unless cover_state == 'good'
     create_book(label, genre, author, published_date, publisher, cover_state)
-    @items[-1].set_id_once(@items[-1].id)
+    @items[-1].id_changer(@items[-1].id)
   end
 
   def create_book(label, genre, author, published_date, publisher, cover_state)
@@ -303,7 +303,7 @@ class App
     puts last_played_at
 
     create_game(label, genre, author, published_date, last_played_at)
-    @items[-1].set_id_once(@items[-1].id)
+    @items[-1].id_changer(@items[-1].id)
   end
 
   def create_game(label, genre, author, published_date, last_played_at)
@@ -342,7 +342,7 @@ class App
     on_spotify_input = gets.chomp.strip.downcase
     on_spotify = (on_spotify_input == 'y')
     create_music_album(label, genre, author, published_date, on_spotify)
-    @items[-1].set_id_once(@items[-1].id)
+    @items[-1].id_changer(@items[-1].id)
   end
 
   def create_music_album(label, genre, author, published_date, on_spotify)

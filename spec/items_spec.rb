@@ -46,13 +46,13 @@ RSpec.describe Item do
     end
   end
 
-  describe '#set_id_once' do
+  describe '#id_changer' do
     it 'sets the id if id_setter is false' do
       expect(label).to receive(:add_item)
       expect(genre).to receive(:add_item)
       expect(author).to receive(:add_item)
       new_id = SecureRandom.uuid
-      item.set_id_once(new_id)
+      item.id_changer(new_id)
       expect(item.id).to eq(new_id)
     end
 
@@ -62,8 +62,8 @@ RSpec.describe Item do
       expect(author).to receive(:add_item)
       original_id = item.id
       new_id = SecureRandom.uuid
-      item.set_id_once(original_id)
-      item.set_id_once(new_id)
+      item.id_changer(original_id)
+      item.id_changer(new_id)
       expect(item.id).to eq(original_id)
     end
   end

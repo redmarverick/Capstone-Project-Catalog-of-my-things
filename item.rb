@@ -24,7 +24,7 @@ class Item
     @archived = can_be_archived?
   end
 
-  def set_id_once(newid)
+  def id_changer(newid)
     return unless @id_setter == false
 
     @id = newid

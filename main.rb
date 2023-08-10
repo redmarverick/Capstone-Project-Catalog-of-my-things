@@ -11,12 +11,14 @@ require_relative 'item'
 
 @app = App.new
 
+# rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/MethodLength
 def run(app = nil)
   puts 'Welcome to the Console App!'
   app.check_data
   loop do
     display_options
-    choice = get_user_choice
+    choice = user_choice
     case choice
     when 1 then app&.list_items('Book')
     when 2 then app&.list_items('MusicAlbum')
@@ -34,6 +36,8 @@ def run(app = nil)
   puts 'Goodbye!'
   app.save_data
 end
+# rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/MethodLength
 
 def display_options
   puts "\nOptions:"
@@ -49,7 +53,7 @@ def display_options
   puts '0. Quit'
 end
 
-def get_user_choice
+def user_choice
   print 'Enter your choice: '
   gets.chomp.to_i
 end

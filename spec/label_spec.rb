@@ -49,18 +49,18 @@ RSpec.describe Label do
     end
   end
 
-  describe '#set_id_once' do
+  describe '#id_changer' do
     it 'sets the id if id_setter is false' do
       new_id = SecureRandom.uuid
-      label.set_id_once(new_id)
+      label.id_changer(new_id)
       expect(label.id).to eq(new_id)
     end
 
     it 'does not set the id if id_setter is true' do
       original_id = label.id
       new_id = SecureRandom.uuid
-      label.set_id_once(original_id)
-      label.set_id_once(new_id)
+      label.id_changer(original_id)
+      label.id_changer(new_id)
       expect(label.id).to eq(original_id)
     end
   end

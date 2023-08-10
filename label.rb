@@ -16,7 +16,7 @@ class Label
     item.label = @id
   end
 
-  def set_id_once(newid)
+  def id_changer(newid)
     return unless @id_setter == false
 
     @id = newid
