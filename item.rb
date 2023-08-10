@@ -9,7 +9,7 @@ class Item
     @id = SecureRandom.uuid
     @id_setter = false
     @label = label || 'No label given'
-    @genre  = genre || 'No genre given'
+    @genre = genre || 'No genre given'
     @author = author || 'No author given'
     @published_date = published_date
     @archived = false
@@ -18,19 +18,19 @@ class Item
 
   def can_be_archived?
     (Time.now - DateTime.parse(@published_date).to_time) > 10 * 365 * 24 * 60 * 60 # 10 years in seconds
-  end  
+  end
 
   def move_to_archive
     @archived = can_be_archived?
   end
 
-  def set_id_once(newid)
-    if @id_setter == false
-      @id = newid
-      @id_setter = true
-      @label&.add_item(self)
-      @genre&.add_item(self)
-      @author&.add_item(self)
-    end
+  def id_changer(newid)
+    return unless @id_setter == false
+
+    @id = newid
+    @id_setter = true
+    @label&.add_item(self)
+    @genre&.add_item(self)
+    @author&.add_item(self)
   end
 end

@@ -1,4 +1,4 @@
-require_relative '../item.rb'
+require_relative '../item'
 require 'rspec'
 require 'date'
 
@@ -22,7 +22,7 @@ RSpec.describe Item do
 
   describe '#can_be_archived?' do
     it 'returns true if the published date is more than 10 years ago' do
-      old_published_date = (Date.today - 11 * 365).to_s
+      old_published_date = (Date.today - (11 * 365)).to_s
       old_item = Item.new(label, genre, author, old_published_date)
       expect(old_item.can_be_archived?).to be_truthy
     end
@@ -46,15 +46,14 @@ RSpec.describe Item do
     end
   end
 
-  describe '#set_id_once' do
+  describe '#id_changer' do
     it 'sets the id if id_setter is false' do
       expect(label).to receive(:add_item)
       expect(genre).to receive(:add_item)
       expect(author).to receive(:add_item)
       new_id = SecureRandom.uuid
-      item.set_id_once(new_id)
+      item.id_changer(new_id)
       expect(item.id).to eq(new_id)
-      
     end
 
     it 'does not set the id if id_setter is true' do
@@ -63,8 +62,8 @@ RSpec.describe Item do
       expect(author).to receive(:add_item)
       original_id = item.id
       new_id = SecureRandom.uuid
-      item.set_id_once(original_id)
-      item.set_id_once(new_id)
+      item.id_changer(original_id)
+      item.id_changer(new_id)
       expect(item.id).to eq(original_id)
     end
   end

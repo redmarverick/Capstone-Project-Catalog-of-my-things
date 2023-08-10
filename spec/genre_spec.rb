@@ -44,18 +44,18 @@ RSpec.describe Genre do
     end
   end
 
-  describe '#set_id_once' do
+  describe '#id_changer' do
     it 'sets the id if id_setter is false' do
       new_id = SecureRandom.uuid
-      genre.set_id_once(new_id)
+      genre.id_changer(new_id)
       expect(genre.id).to eq(new_id)
     end
 
     it 'does not set the id if id_setter is true' do
       original_id = genre.id
       new_id = SecureRandom.uuid
-      genre.set_id_once(original_id)
-      genre.set_id_once(new_id)
+      genre.id_changer(original_id)
+      genre.id_changer(new_id)
       expect(genre.id).to eq(original_id)
     end
   end

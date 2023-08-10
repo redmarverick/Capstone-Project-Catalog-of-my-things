@@ -1,4 +1,4 @@
-require_relative 'item.rb'
+require_relative 'item'
 require 'date'
 
 class Game < Item
@@ -8,8 +8,7 @@ class Game < Item
   end
 
   def can_be_archived?
-
-    super && (DateTime.parse(@last_played_at).to_time <= (Time.now - 2 * 365 * 24 * 60 * 60))
+    super && (DateTime.parse(@last_played_at).to_time <= (Time.now - (2 * 365 * 24 * 60 * 60)))
   end
 
   def to_json(_options = {})
