@@ -17,8 +17,6 @@ class Item
   end
 
   def can_be_archived?
-    # puts @published_date
-    # puts ((Time.now - DateTime.parse(@published_date).to_time) > 10 * 365 * 24 * 60 * 60)
     (Time.now - DateTime.parse(@published_date).to_time) > 10 * 365 * 24 * 60 * 60 # 10 years in seconds
   end  
 
