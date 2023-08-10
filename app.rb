@@ -10,6 +10,8 @@ require 'json'
 
 require 'date'
 
+# rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/ClassLength
 class App
   attr_reader :items
 
@@ -360,3 +362,5 @@ class App
     @authors.find { |author| author.id == author_id }
   end
 end
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/ClassLength
