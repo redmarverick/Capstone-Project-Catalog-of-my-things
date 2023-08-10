@@ -38,6 +38,7 @@ RSpec.describe Label do
     let(:item) { instance_double('Item', id: item_id, label: nil) }
 
     it 'adds the item ID to the items array' do
+      expect(item).to receive(:label=).with(label.id)
       label.add_item(item)
       expect(label.items).to include(item_id)
     end

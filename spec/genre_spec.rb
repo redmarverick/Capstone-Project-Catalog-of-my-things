@@ -33,6 +33,7 @@ RSpec.describe Genre do
     let(:item) { instance_double('Item', id: item_id, genre: nil) }
 
     it 'adds the item ID to the items array' do
+      expect(item).to receive(:genre=).with(genre.id)
       genre.add_item(item)
       expect(genre.items).to include(item_id)
     end

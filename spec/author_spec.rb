@@ -33,6 +33,7 @@ RSpec.describe Author do
     let(:item) { instance_double('Item', id: item_id, author: nil) }
 
     it 'adds the item ID to the items array' do
+      expect(item).to receive(:author=).with(author.id)
       author.add_item(item)
       expect(author.items).to include(item_id)
     end
