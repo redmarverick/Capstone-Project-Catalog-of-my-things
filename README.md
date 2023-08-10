@@ -88,7 +88,7 @@ No deployment implemented yet
 
 👤 **Marco Almada**
 
-- GitHub: [StevenWafeek](https://github.com/MarcoDDM)
+- GitHub: [Marco Almada](https://github.com/MarcoDDM)
 - Twitter: [nerdpiola](https://twitter.com/nerdpiola)
 - LinkedIn: [Marco Almada](https://www.linkedin.com/in/marcoalmadaar/)
 
