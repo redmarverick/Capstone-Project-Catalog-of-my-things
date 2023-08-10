@@ -8,7 +8,7 @@ RSpec.describe Book do
   let(:author) { 'Sample Author' }
   let(:published_date) { (Date.today - 365).to_s } # One year ago
   let(:publisher) { 'Sample Publisher' }
-  let(:cover_state) { 'Good' }
+  let(:cover_state) { 'bad' }
 
   subject(:book) do
     described_class.new(label, genre, author, published_date, publisher, cover_state)
