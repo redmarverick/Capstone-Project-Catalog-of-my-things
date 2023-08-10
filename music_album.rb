@@ -1,4 +1,4 @@
-require_relative 'item.rb'
+require_relative 'item'
 
 class MusicAlbum < Item
   def initialize(label = nil, genre = nil, author = nil, published_date = nil, on_spotify: false)

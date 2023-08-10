@@ -25,15 +25,15 @@ class App
       'items' => -> { @items }
     }
   end
-  
+
   def label?(title, color, label_id = nil)
     existing_label = @labels.find { |label| label.title == title }
-  
+
     if existing_label
       existing_label
     else
       new_label = Label.new(title, color)
-      if label_id == nil
+      if label_id.nil?
         new_label.set_id_once(new_label.id)
       else
         new_label.set_id_once(label_id)
@@ -45,15 +45,15 @@ class App
 
   def find_or_create_author(author_name, author_id = nil)
     existing_author = @authors.find { |author| author.name == author_name }
-  
+
     if existing_author
       existing_author
     else
       new_author = Author.new(author_name)
-      if author_id != nil
-        new_author.set_id_once(author_id)
-      else
+      if author_id.nil?
         new_author.set_id_once(new_author.id)
+      else
+        new_author.set_id_once(author_id)
       end
       @authors << new_author
       new_author
@@ -62,12 +62,12 @@ class App
 
   def genre?(genre_name, genre_id = nil)
     existing_genre = @genres.find { |genre| genre.name == genre_name }
-  
+
     if existing_genre
       existing_genre
     else
       new_genre = Genre.new(genre_name)
-      if genre_id == nil
+      if genre_id.nil?
         new_genre.set_id_once(new_genre.id)
       else
         new_genre.set_id_once(genre_id)
@@ -120,7 +120,8 @@ class App
 
   def check_items(data)
     data.each do |item_data|
-      if item_data['type'] == 'MusicAlbum'
+      case item_data['type']
+      when 'MusicAlbum'
         create_music_album(
           label_by_id(item_data['label']),
           genre_by_id(item_data['genre']),
@@ -129,7 +130,7 @@ class App
           on_spotify: item_data['on_spotify']
         )
         @items[-1].set_id_once(item_data['id'])
-      elsif item_data['type'] == 'Game'
+      when 'Game'
         create_game(
           label_by_id(item_data['label']),
           genre_by_id(item_data['genre']),
@@ -138,14 +139,14 @@ class App
           item_data['last_played_at']
         )
         @items[-1].set_id_once(item_data['id'])
-      elsif item_data['type'] == 'Book'
+      when 'Book'
         create_book(
           label_by_id(item_data['label']),
           genre_by_id(item_data['genre']),
           author_by_id(item_data['author']),
           item_data['published_date'],
           item_data['publisher'],
-          item_data['cover_state'],
+          item_data['cover_state']
         )
         @items[-1].set_id_once(item_data['id'])
       end
@@ -164,9 +165,9 @@ class App
 
   def list_genres
     if @genres.empty?
-      puts "There are no genres yet."
+      puts 'There are no genres yet.'
     else
-      puts "Genres:"
+      puts 'Genres:'
       @genres.each do |genre|
         puts "name: #{genre.name}, ID: #{genre.id}, items: #{genre.items}"
       end
@@ -175,9 +176,9 @@ class App
 
   def list_labels
     if @labels.empty?
-      puts "There are no labels yet."
+      puts 'There are no labels yet.'
     else
-      puts "Labels:"
+      puts 'Labels:'
       @labels.each do |label|
         puts "title: #{label.title}, color: #{label.color}, ID: #{label.id}, items: #{label.items}"
       end
@@ -186,9 +187,9 @@ class App
 
   def list_authors
     if @authors.empty?
-      puts "There are no authors yet."
+      puts 'There are no authors yet.'
     else
-      puts "Authors:"
+      puts 'Authors:'
       @authors.each do |author|
         puts "name: #{author.name}, ID: #{author.id}, items: #{author.items}"
       end
@@ -206,11 +207,12 @@ class App
   end
 
   def add_item(item_type)
-    if item_type == 'MusicAlbum'
+    case item_type
+    when 'MusicAlbum'
       add_music_album
-    elsif item_type == 'Game'
+    when 'Game'
       add_game
-    elsif item_type == 'Book'
+    when 'Book'
       add_book
     end
   end
@@ -233,10 +235,10 @@ class App
       print "\nGive me the publish date of the Book please (format: YYYY/MM/DD): "
       published_date = gets.chomp
       begin
-        published_date_formated = DateTime.parse(published_date).to_time
+        DateTime.parse(published_date).to_time
         break
       rescue ArgumentError
-        puts "Invalid date format. Please use the format YYYY/MM/DD."
+        puts 'Invalid date format. Please use the format YYYY/MM/DD.'
         puts ''
       end
     end
@@ -260,12 +262,12 @@ class App
     label_name = gets.chomp
     label_name = label_name.strip.split.map(&:capitalize).join(' ')
     label = label?(label_name, 'BlueLabel')
-  
+
     print "\nGive me the genre of the Game please: "
     genre_name = gets.chomp
     genre_name = genre_name.strip.split.map(&:capitalize).join(' ')
     genre = genre?(genre_name)
-  
+
     print "\nGive me the author of the Game please: "
     author_name = gets.chomp
     author_name = author_name.strip.split.map(&:capitalize).join(' ')
@@ -276,10 +278,10 @@ class App
       print "\nGive me the publish date of the Game please (format: YYYY/MM/DD): "
       published_date = gets.chomp
       begin
-        published_date_formated = DateTime.parse(published_date).to_time
+        DateTime.parse(published_date).to_time
         break
       rescue ArgumentError
-        puts "Invalid date format. Please use the format YYYY/MM/DD."
+        puts 'Invalid date format. Please use the format YYYY/MM/DD.'
         puts ''
       end
     end
@@ -289,10 +291,10 @@ class App
       print "\nGive me the last played date of the Game please (format: YYYY/MM/DD): "
       last_played_at = gets.chomp
       begin
-        last_played_at_formated = DateTime.parse(last_played_at).to_time
+        DateTime.parse(last_played_at).to_time
         break
       rescue ArgumentError
-        puts "Invalid date format. Please use the format YYYY/MM/DD."
+        puts 'Invalid date format. Please use the format YYYY/MM/DD.'
         puts ''
       end
     end
@@ -300,7 +302,7 @@ class App
 
     create_game(label, genre, author, published_date, last_played_at)
     @items[-1].set_id_once(@items[-1].id)
-  end  
+  end
 
   def create_game(label, genre, author, published_date, last_played_at)
     puts last_played_at
@@ -325,10 +327,10 @@ class App
       print "\nGive me the publish date of the Game please (format: YYYY/MM/DD): "
       published_date = gets.chomp
       begin
-        published_date_formated = DateTime.parse(published_date).to_time
+        DateTime.parse(published_date).to_time
         break
       rescue ArgumentError
-        puts "Invalid date format. Please use the format YYYY/MM/DD."
+        puts 'Invalid date format. Please use the format YYYY/MM/DD.'
         puts ''
       end
     end
@@ -347,17 +349,14 @@ class App
   end
 
   def label_by_id(label_id)
-    existing_label = @labels.find { |label| label.id == label_id }
-    existing_label
+    @labels.find { |label| label.id == label_id }
   end
 
   def genre_by_id(genre_id)
-    existing_genre = @genres.find { |genre| genre.id == genre_id }
-    existing_genre
+    @genres.find { |genre| genre.id == genre_id }
   end
 
   def author_by_id(author_id)
-    existing_author = @authors.find { |author| author.id == author_id }
-    existing_author
+    @authors.find { |author| author.id == author_id }
   end
 end
