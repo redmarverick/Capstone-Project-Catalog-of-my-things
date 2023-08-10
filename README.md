@@ -80,6 +80,18 @@ No deployment implemented yet
 - Twitter: [@Nylbert Victor](https://twitter.com/MarverickRed)
 - LinkedIn: [Nylbert Victor](https://www.linkedin.com/in/nylbert-victor-397951120/)
 
+👤 **Gabriel Rozas**
+
+- GitHub: [@EmiLoKiJu](https://github.com/EmiLoKiJu)
+- Twitter: [@GabrielRozas12](https://twitter.com/GabrielRozas12)
+- LinkedIn: [grozas](https://www.linkedin.com/in/grozas/)
+
+👤 **Marco Almada**
+
+- GitHub: [StevenWafeek](https://github.com/MarcoDDM)
+- Twitter: [nerdpiola](https://twitter.com/nerdpiola)
+- LinkedIn: [Marco Almada](https://www.linkedin.com/in/marcoalmadaar/)
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- FUTURE FEATURES -->
