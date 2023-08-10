@@ -202,9 +202,12 @@ class App
     item_class = Object.const_get(item_type)
     puts "\nListing all #{item_type}:"
     @items.each do |item|
-      if item.is_a?(item_class)
-        puts "label title: #{label_by_id(item.label).title}, label color: #{label_by_id(item.label).color}, genre: #{genre_by_id(item.genre).name}, author: #{author_by_id(item.author).name}, ID: #{item.id}"
-      end
+      next unless item.is_a?(item_class)
+
+      puts "label title: #{label_by_id(item.label).title}"
+      puts "label color: #{label_by_id(item.label).color}"
+      puts "genre: #{genre_by_id(item.genre).name}"
+      puts "author: #{author_by_id(item.author).name}, ID: #{item.id}"
     end
   end
 
