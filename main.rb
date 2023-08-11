@@ -1,13 +1,4 @@
 require_relative 'app'
-require_relative 'item'
-
-# require 'sqlite3'
-# require 'active_record'
-
-# ActiveRecord::Base.establish_connection(
-#    adapter: 'sqlite3',
-#    database: 'capstone.db'
-#  )
 
 @app = App.new
 
